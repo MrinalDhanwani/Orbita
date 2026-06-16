@@ -1,4 +1,4 @@
-function Hero() {
+function Hero({ onStartClick }) {
   return (
     <section className="min-h-screen flex flex-col items-center justify-center text-center px-6 bg-gradient-to-b from-purple-50 to-white">
 
@@ -21,7 +21,7 @@ function Hero() {
       </p>
 
       <div className="flex gap-4 flex-wrap justify-center">
-        <button className="bg-purple-600 text-white px-8 py-3 rounded-full text-lg font-semibold hover:bg-purple-700 transition">
+        <button onClick={onStartClick} className="bg-purple-600 text-white px-8 py-3 rounded-full text-lg font-semibold hover:bg-purple-700 transition">
           Start Building →
         </button>
         <button className="border-2 border-purple-200 text-purple-600 px-8 py-3 rounded-full text-lg font-semibold hover:bg-purple-50 transition">

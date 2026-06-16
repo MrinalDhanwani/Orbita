@@ -1,4 +1,4 @@
-function Navbar() {
+function Navbar({ onStartClick }) {
   return (
     <nav className="flex items-center justify-between px-8 py-4 bg-white border-b border-gray-100">
       
@@ -13,7 +13,7 @@ function Navbar() {
         <a href="#why" className="text-gray-500 hover:text-purple-600 transition">
           Why Orbita
         </a>
-        <button className="bg-purple-600 text-white px-5 py-2 rounded-full hover:bg-purple-700 transition font-medium">
+        <button onClick={onStartClick} className="bg-purple-600 text-white px-5 py-2 rounded-full hover:bg-purple-700 transition font-medium">
           Join Waitlist
         </button>
       </div>

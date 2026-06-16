@@ -1,18 +1,15 @@
-import Navbar from './components/Navbar';
-import Hero from './components/Hero';
-import HowItWorks from './components/HowItWorks';
-import WhyOrbita from './components/WhyOrbita';
-import Footer from './components/Footer';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import Home from './pages/Home';
+import StartBuilding from './pages/StartBuilding';
 
 function App() {
   return (
-    <div>
-      <Navbar />
-      <Hero />
-      <HowItWorks />
-      <WhyOrbita />
-      <Footer />
-    </div>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/start" element={<StartBuilding />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
 
