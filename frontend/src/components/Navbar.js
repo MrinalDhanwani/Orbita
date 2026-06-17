@@ -1,4 +1,4 @@
-function Navbar({ onStartClick }) {
+function Navbar() {
   return (
     <nav className="flex items-center justify-between px-8 py-4 bg-white border-b border-gray-100">
       
@@ -13,8 +13,11 @@ function Navbar({ onStartClick }) {
         <a href="#why" className="text-gray-500 hover:text-purple-600 transition">
           Why Orbita
         </a>
-        <button onClick={onStartClick} className="bg-purple-600 text-white px-5 py-2 rounded-full hover:bg-purple-700 transition font-medium">
+        <button onClick={() => document.getElementById('waitlist-section')?.scrollIntoView({behavior: 'smooth'})} className="text-purple-600 px-5 py-2 rounded-full hover:bg-purple-50 transition font-medium">
           Join Waitlist
+        </button>
+        <button onClick={() => window.location.href='/signup'} className="bg-purple-600 text-white px-5 py-2 rounded-full hover:bg-purple-700 transition font-medium">
+          Sign Up
         </button>
       </div>
 

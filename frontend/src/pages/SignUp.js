@@ -1,0 +1,104 @@
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+
+function SignUp() {
+  const navigate = useNavigate();
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  const handleSignUp = async () => {
+    if (!name || !email || !password) {
+      setError('Please fill in all fields');
+      return;
+    }
+
+    setLoading(true);
+    setError('');
+
+    try {
+      const response = await fetch('http://localhost:5000/api/signup', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, email, password })
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        localStorage.setItem('orbitaUser', JSON.stringify(data.user));
+        navigate('/start');
+      } else {
+        setError(data.error || 'Something went wrong');
+      }
+    } catch (err) {
+      setError(err.message);
+    }
+
+    setLoading(false);
+  };
+
+  return (
+    <div className="min-h-screen bg-gradient-to-b from-purple-50 to-white flex items-center justify-center px-6">
+
+      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-10 max-w-md w-full">
+
+        <div className="text-center mb-8">
+          <div className="text-3xl font-bold text-purple-600 mb-2">
+            🪐 Orbita
+          </div>
+          <h1 className="text-2xl font-bold text-gray-900">
+            Create your account
+          </h1>
+          <p className="text-gray-400 mt-2">
+            Find your perfect co-builder today
+          </p>
+        </div>
+
+        <div className="space-y-4">
+          <input
+            type="text"
+            placeholder="Full name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            className="w-full border border-gray-200 rounded-xl p-3 focus:outline-none focus:border-purple-400"
+          />
+          <input
+            type="email"
+            placeholder="Email address"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            className="w-full border border-gray-200 rounded-xl p-3 focus:outline-none focus:border-purple-400"
+          />
+          <input
+            type="password"
+            placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            className="w-full border border-gray-200 rounded-xl p-3 focus:outline-none focus:border-purple-400"
+          />
+        </div>
+
+        {error && (
+          <div className="bg-red-50 text-red-500 px-4 py-3 rounded-xl mt-4 text-sm">
+            {error}
+          </div>
+        )}
+
+        <button
+          onClick={handleSignUp}
+          disabled={loading}
+          className="w-full bg-purple-600 hover:bg-purple-700 disabled:bg-purple-300 transition text-white py-3 rounded-full font-semibold mt-6"
+        >
+          {loading ? 'Creating account...' : 'Sign Up →'}
+        </button>
+
+      </div>
+
+    </div>
+  );
+}
+
+export default SignUp;

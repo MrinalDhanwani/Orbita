@@ -49,7 +49,7 @@ function Footer() {
             </div>
           </div>
 
-          <div className="bg-purple-900 rounded-2xl p-6 max-w-xs">
+          <div id="waitlist-section" className="bg-purple-900 rounded-2xl p-6 max-w-xs">
             <div className="text-lg font-bold mb-2">
               Join the waitlist
             </div>

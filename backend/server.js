@@ -2,6 +2,8 @@ require('dotenv').config();
 
 const ProjectDNA = require('./models/ProjectDNA');
 const mongoose = require('mongoose');
+const User = require('./models/User');
+const bcrypt = require('bcryptjs');
 
 mongoose.connect(process.env.MONGODB_URI)
   .then(() => console.log('MongoDB connected successfully 🪐'))
@@ -70,6 +72,42 @@ app.post('/api/project-dna', async (req, res) => {
 
   } catch (error) {
     console.error('Full error:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+app.post('/api/signup', async (req, res) => {
+  const { name, email, password } = req.body;
+
+  if (!name || !email || !password) {
+    return res.status(400).json({ error: 'All fields are required' });
+  }
+
+  try {
+    const existingUser = await User.findOne({ email });
+
+    if (existingUser) {
+      return res.status(400).json({ error: 'Email already registered' });
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const newUser = await User.create({
+      name,
+      email,
+      password: hashedPassword
+    });
+
+    res.json({
+      success: true,
+      user: {
+        id: newUser._id,
+        name: newUser.name,
+        email: newUser.email
+      }
+    });
+
+  } catch (error) {
+    console.error('Signup error:', error);
     res.status(500).json({ error: error.message });
   }
 });

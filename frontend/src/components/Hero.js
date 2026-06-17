@@ -21,7 +21,7 @@ function Hero({ onStartClick }) {
       </p>
 
       <div className="flex gap-4 flex-wrap justify-center">
-        <button onClick={onStartClick} className="bg-purple-600 text-white px-8 py-3 rounded-full text-lg font-semibold hover:bg-purple-700 transition">
+        <button onClick={() => window.location.href='/signup'} className="bg-purple-600 text-white px-8 py-3 rounded-full text-lg font-semibold hover:bg-purple-700 transition">
           Start Building →
         </button>
         <button className="border-2 border-purple-200 text-purple-600 px-8 py-3 rounded-full text-lg font-semibold hover:bg-purple-50 transition">
