@@ -1,10 +1,11 @@
 require('dotenv').config();
+
+const ProjectDNA = require('./models/ProjectDNA');
 const mongoose = require('mongoose');
 
 mongoose.connect(process.env.MONGODB_URI)
   .then(() => console.log('MongoDB connected successfully 🪐'))
   .catch((err) => console.log('MongoDB connection error:', err));
-
 
 const express = require('express');
 const cors = require('cors');
@@ -59,7 +60,13 @@ app.post('/api/project-dna', async (req, res) => {
 
     const rawResponse = completion.choices[0].message.content;
     const projectDNA = JSON.parse(rawResponse);
-    res.json({ success: true, projectDNA });
+
+    const savedProjectDNA = await ProjectDNA.create({
+      originalIdea: projectIdea,
+      ...projectDNA
+    });
+
+    res.json({ success: true, projectDNA: savedProjectDNA });
 
   } catch (error) {
     console.error('Full error:', error);
