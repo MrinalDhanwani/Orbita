@@ -224,24 +224,42 @@ app.get('/api/find-match/:userId', async (req, res) => {
 
 app.post('/api/create-sprint', async (req, res) => {
   const { userId, matchEmail, projectName, projectSummary } = req.body;
-
   try {
     const matchUser = await User.findOne({ email: matchEmail });
-
-    const endDate = new Date();
-    endDate.setDate(endDate.getDate() + 30);
-
     const newSprint = await Sprint.create({
-      participants: [userId, matchUser._id],
+      initiator: userId,
+      invitee: matchUser._id,
+      participants: [userId],
       projectName,
       projectSummary,
-      endDate
+      status: 'pending'
     });
-
     res.json({ success: true, sprint: newSprint });
-
   } catch (error) {
-    console.error('Sprint creation error:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.get('/api/invites/:userId', async (req, res) => {
+  try {
+    const invites = await Sprint.find({ invitee: req.params.userId, status: 'pending' }).populate('initiator', 'name email');
+    res.json({ success: true, invites });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.post('/api/sprint/:sprintId/accept', async (req, res) => {
+  try {
+    const endDate = new Date();
+    endDate.setDate(endDate.getDate() + 30);
+    const sprint = await Sprint.findByIdAndUpdate(
+      req.params.sprintId,
+      { status: 'active', startDate: new Date(), endDate, $push: { participants: req.body.userId } },
+      { new: true }
+    );
+    res.json({ success: true, sprint });
+  } catch (error) {
     res.status(500).json({ error: error.message });
   }
 });
