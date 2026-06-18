@@ -5,6 +5,7 @@ import StartBuilding from './pages/StartBuilding';
 import Login from './pages/Login';
 import VibeCheck from './pages/VibeCheck';
 import FindMatch from './pages/FindMatch';
+import SprintRoom from './pages/SprintRoom';
 
 
 function App() {
@@ -17,6 +18,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/vibe-check" element={<VibeCheck />} />
         <Route path="/find-match" element={<FindMatch />} />
+        <Route path="/sprint/:sprintId" element={<SprintRoom />} />
       </Routes>
     </BrowserRouter>
   );

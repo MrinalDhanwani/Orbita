@@ -31,6 +31,7 @@ function ProjectDNA() {
 
       if (data.success) {
         setResult(data.projectDNA);
+        localStorage.setItem('latestProjectDNA', JSON.stringify(data.projectDNA));
       } else {
         setError('Something went wrong. Please try again.');
       }

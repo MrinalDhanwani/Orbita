@@ -4,6 +4,7 @@ const ProjectDNA = require('./models/ProjectDNA');
 const mongoose = require('mongoose');
 const User = require('./models/User');
 const bcrypt = require('bcryptjs');
+const Sprint = require('./models/Sprint');
 
 mongoose.connect(process.env.MONGODB_URI)
   .then(() => console.log('MongoDB connected successfully 🪐'))
@@ -213,6 +214,54 @@ app.get('/api/find-match/:userId', async (req, res) => {
 
   } catch (error) {
     console.error('Match error:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+app.post('/api/create-sprint', async (req, res) => {
+  const { userId, matchEmail, projectName, projectSummary } = req.body;
+
+  try {
+    const matchUser = await User.findOne({ email: matchEmail });
+
+    const endDate = new Date();
+    endDate.setDate(endDate.getDate() + 30);
+
+    const newSprint = await Sprint.create({
+      participants: [userId, matchUser._id],
+      projectName,
+      projectSummary,
+      endDate
+    });
+
+    res.json({ success: true, sprint: newSprint });
+
+  } catch (error) {
+    console.error('Sprint creation error:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+app.get('/api/sprint/:sprintId', async (req, res) => {
+  try {
+    const sprint = await Sprint.findById(req.params.sprintId);
+    res.json({ success: true, sprint });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.post('/api/sprint/:sprintId/checkin', async (req, res) => {
+  const { userId, update } = req.body;
+
+  try {
+    const sprint = await Sprint.findByIdAndUpdate(
+      req.params.sprintId,
+      { $push: { checkIns: { userId, update } } },
+      { new: true }
+    );
+
+    res.json({ success: true, sprint });
+
+  } catch (error) {
     res.status(500).json({ error: error.message });
   }
 });

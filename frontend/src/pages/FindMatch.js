@@ -6,6 +6,7 @@ function FindMatch() {
   const [match, setMatch] = useState(null);
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(true);
+  const [creating, setCreating] = useState(false);
 
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem('orbitaUser'));
@@ -32,6 +33,35 @@ function FindMatch() {
         setLoading(false);
       });
   }, [navigate]);
+
+  const handleStartSprint = async () => {
+    setCreating(true);
+    const user = JSON.parse(localStorage.getItem('orbitaUser'));
+    const latestDNA = JSON.parse(localStorage.getItem('latestProjectDNA') || '{}');
+
+    try {
+      const response = await fetch('http://localhost:5000/api/create-sprint', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          userId: user.id,
+          matchEmail: match.email,
+          projectName: latestDNA.projectName || 'Untitled Project',
+          projectSummary: latestDNA.summary || ''
+        })
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        navigate(`/sprint/${data.sprint._id}`);
+      }
+    } catch (err) {
+      console.error(err);
+    }
+
+    setCreating(false);
+  };
 
   if (loading) {
     return (
@@ -65,8 +95,12 @@ function FindMatch() {
                 {match.vibeCheck?.pace} • {match.vibeCheck?.communication} • {match.vibeCheck?.experience}
               </p>
             </div>
-            <button className="w-full bg-purple-600 hover:bg-purple-700 transition text-white py-3 rounded-full font-semibold">
-              Start 30-Day Sprint →
+            <button
+              onClick={handleStartSprint}
+              disabled={creating}
+              className="w-full bg-purple-600 hover:bg-purple-700 disabled:bg-purple-300 transition text-white py-3 rounded-full font-semibold"
+            >
+              {creating ? 'Creating sprint room...' : 'Start 30-Day Sprint →'}
             </button>
           </>
         ) : (
