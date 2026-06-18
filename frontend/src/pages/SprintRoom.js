@@ -4,9 +4,11 @@ import { useParams } from 'react-router-dom';
 function SprintRoom() {
   const { sprintId } = useParams();
   const [sprint, setSprint] = useState(null);
+  const [isFlagged, setIsFlagged] = useState(false);
   const [checkInText, setCheckInText] = useState('');
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
+  
 
   useEffect(() => {
     fetch(`http://localhost:5000/api/sprint/${sprintId}`)
@@ -14,6 +16,7 @@ function SprintRoom() {
       .then((data) => {
         if (data.success) {
           setSprint(data.sprint);
+          setIsFlagged(data.isFlagged);
         }
         setLoading(false);
       });
@@ -73,6 +76,11 @@ function SprintRoom() {
           <div className="text-purple-600 font-semibold mt-3">
             {daysLeft} days left
           </div>
+          {isFlagged && (
+                <div className="bg-red-50 text-red-600 text-sm font-semibold px-4 py-2 rounded-full inline-block mt-3">
+                    ⚠️ No check-ins in 3+ days
+                </div>
+          )}
         </div>
 
         <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 mb-6">

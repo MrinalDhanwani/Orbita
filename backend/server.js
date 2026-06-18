@@ -76,6 +76,7 @@ app.post('/api/project-dna', async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
+
 app.post('/api/signup', async (req, res) => {
   const { name, email, password } = req.body;
 
@@ -112,6 +113,7 @@ app.post('/api/signup', async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
+
 app.post('/api/login', async (req, res) => {
   const { email, password } = req.body;
 
@@ -146,6 +148,7 @@ app.post('/api/login', async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
+
 app.post('/api/vibe-check', async (req, res) => {
   const { userId, pace, schedule, experience, communication, priority } = req.body;
 
@@ -167,6 +170,7 @@ app.post('/api/vibe-check', async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
+
 app.get('/api/find-match/:userId', async (req, res) => {
   const { userId } = req.params;
 
@@ -217,6 +221,7 @@ app.get('/api/find-match/:userId', async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
+
 app.post('/api/create-sprint', async (req, res) => {
   const { userId, matchEmail, projectName, projectSummary } = req.body;
 
@@ -240,14 +245,6 @@ app.post('/api/create-sprint', async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
-app.get('/api/sprint/:sprintId', async (req, res) => {
-  try {
-    const sprint = await Sprint.findById(req.params.sprintId);
-    res.json({ success: true, sprint });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
 
 app.post('/api/sprint/:sprintId/checkin', async (req, res) => {
   const { userId, update } = req.body;
@@ -260,6 +257,28 @@ app.post('/api/sprint/:sprintId/checkin', async (req, res) => {
     );
 
     res.json({ success: true, sprint });
+
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.get('/api/sprint/:sprintId', async (req, res) => {
+  try {
+    const sprint = await Sprint.findById(req.params.sprintId);
+
+    let isFlagged = false;
+
+    if (sprint.checkIns.length > 0) {
+      const lastCheckIn = sprint.checkIns[sprint.checkIns.length - 1];
+      const daysSinceLastCheckIn = Math.floor((new Date() - new Date(lastCheckIn.date)) / (1000 * 60 * 60 * 24));
+      isFlagged = daysSinceLastCheckIn >= 3;
+    } else {
+      const daysSinceStart = Math.floor((new Date() - new Date(sprint.startDate)) / (1000 * 60 * 60 * 24));
+      isFlagged = daysSinceStart >= 3;
+    }
+
+    res.json({ success: true, sprint, isFlagged });
 
   } catch (error) {
     res.status(500).json({ error: error.message });
