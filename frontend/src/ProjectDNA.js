@@ -1,6 +1,8 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 function ProjectDNA() {
+  const navigate = useNavigate();
   const [idea, setIdea] = useState('');
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState(null);
@@ -165,7 +167,7 @@ function ProjectDNA() {
               </p>
             </div>
 
-            <button className="w-full mt-8 bg-purple-600 hover:bg-purple-700 transition text-white py-4 rounded-full text-lg font-semibold">
+            <button onClick={() => navigate('/find-match')} className="w-full mt-8 bg-purple-600 hover:bg-purple-700 transition text-white py-4 rounded-full text-lg font-semibold">
               Find My Collaborator →
             </button>
 

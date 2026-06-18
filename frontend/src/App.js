@@ -4,6 +4,8 @@ import SignUp from './pages/SignUp';
 import StartBuilding from './pages/StartBuilding';
 import Login from './pages/Login';
 import VibeCheck from './pages/VibeCheck';
+import FindMatch from './pages/FindMatch';
+
 
 function App() {
   return (
@@ -14,6 +16,7 @@ function App() {
         <Route path="/signup" element={<SignUp />} />
         <Route path="/login" element={<Login />} />
         <Route path="/vibe-check" element={<VibeCheck />} />
+        <Route path="/find-match" element={<FindMatch />} />
       </Routes>
     </BrowserRouter>
   );

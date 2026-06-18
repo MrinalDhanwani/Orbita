@@ -166,6 +166,56 @@ app.post('/api/vibe-check', async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
+app.get('/api/find-match/:userId', async (req, res) => {
+  const { userId } = req.params;
+
+  try {
+    const currentUser = await User.findById(userId);
+
+    if (!currentUser) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    const currentUserDNA = await ProjectDNA.findOne({ originalIdea: { $exists: true } }).sort({ createdAt: -1 });
+
+    const otherUsers = await User.find({ _id: { $ne: userId } });
+
+    if (otherUsers.length === 0) {
+      return res.json({ success: true, match: null, message: 'No other builders yet. Be the first to invite a friend!' });
+    }
+
+    const potentialMatches = otherUsers.map((user) => {
+      let compatibilityScore = 50;
+
+      if (currentUser.vibeCheck && user.vibeCheck) {
+        if (currentUser.vibeCheck.pace === user.vibeCheck.pace) compatibilityScore += 10;
+        if (currentUser.vibeCheck.communication === user.vibeCheck.communication) compatibilityScore += 10;
+        if (currentUser.vibeCheck.priority === user.vibeCheck.priority) compatibilityScore += 10;
+        if (currentUser.vibeCheck.experience !== user.vibeCheck.experience) compatibilityScore += 20;
+      }
+
+      return { user, compatibilityScore };
+    });
+
+    potentialMatches.sort((a, b) => b.compatibilityScore - a.compatibilityScore);
+
+    const bestMatch = potentialMatches[0];
+
+    res.json({
+      success: true,
+      match: {
+        name: bestMatch.user.name,
+        email: bestMatch.user.email,
+        vibeCheck: bestMatch.user.vibeCheck,
+        compatibilityScore: bestMatch.compatibilityScore
+      }
+    });
+
+  } catch (error) {
+    console.error('Match error:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
 
 app.listen(PORT, () => {
   console.log(`Orbita backend running on port ${PORT} 🪐`);
