@@ -3,6 +3,7 @@ import Home from './pages/Home';
 import SignUp from './pages/SignUp';
 import StartBuilding from './pages/StartBuilding';
 import Login from './pages/Login';
+import VibeCheck from './pages/VibeCheck';
 
 function App() {
   return (
@@ -12,6 +13,7 @@ function App() {
         <Route path="/start" element={<StartBuilding />} />
         <Route path="/signup" element={<SignUp />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/vibe-check" element={<VibeCheck />} />
       </Routes>
     </BrowserRouter>
   );

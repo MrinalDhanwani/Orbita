@@ -145,6 +145,27 @@ app.post('/api/login', async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
+app.post('/api/vibe-check', async (req, res) => {
+  const { userId, pace, schedule, experience, communication, priority } = req.body;
+
+  if (!userId) {
+    return res.status(400).json({ error: 'User ID required' });
+  }
+
+  try {
+    const updatedUser = await User.findByIdAndUpdate(
+      userId,
+      { vibeCheck: { pace, schedule, experience, communication, priority } },
+      { new: true }
+    );
+
+    res.json({ success: true, user: updatedUser });
+
+  } catch (error) {
+    console.error('Vibe check error:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
 
 app.listen(PORT, () => {
   console.log(`Orbita backend running on port ${PORT} 🪐`);

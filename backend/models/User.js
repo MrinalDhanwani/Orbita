@@ -15,6 +15,13 @@ const userSchema = new mongoose.Schema({
     required: true
   },
   skills: [String],
+  vibeCheck: {
+    pace: String,
+    schedule: String,
+    experience: String,
+    communication: String,
+    priority: String
+  },
   createdAt: {
     type: Date,
     default: Date.now

@@ -29,7 +29,7 @@ function SignUp() {
 
       if (data.success) {
         localStorage.setItem('orbitaUser', JSON.stringify(data.user));
-        navigate('/start');
+        navigate('/vibe-check');
       } else {
         setError(data.error || 'Something went wrong');
       }
