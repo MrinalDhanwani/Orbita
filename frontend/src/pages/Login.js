@@ -1,16 +1,15 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-function SignUp() {
+function Login() {
   const navigate = useNavigate();
-  const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const handleSignUp = async () => {
-    if (!name || !email || !password) {
+  const handleLogin = async () => {
+    if (!email || !password) {
       setError('Please fill in all fields');
       return;
     }
@@ -19,10 +18,10 @@ function SignUp() {
     setError('');
 
     try {
-      const response = await fetch('http://localhost:5000/api/signup', {
+      const response = await fetch('http://localhost:5000/api/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, email, password })
+        body: JSON.stringify({ email, password })
       });
 
       const data = await response.json();
@@ -50,21 +49,14 @@ function SignUp() {
             🪐 Orbita
           </div>
           <h1 className="text-2xl font-bold text-gray-900">
-            Create your account
+            Welcome back
           </h1>
           <p className="text-gray-400 mt-2">
-            Find your perfect co-builder today
+            Log in to continue building
           </p>
         </div>
 
         <div className="space-y-4">
-          <input
-            type="text"
-            placeholder="Full name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            className="w-full border border-gray-200 rounded-xl p-3 focus:outline-none focus:border-purple-400"
-          />
           <input
             type="email"
             placeholder="Email address"
@@ -88,17 +80,17 @@ function SignUp() {
         )}
 
         <button
-          onClick={handleSignUp}
+          onClick={handleLogin}
           disabled={loading}
           className="w-full bg-purple-600 hover:bg-purple-700 disabled:bg-purple-300 transition text-white py-3 rounded-full font-semibold mt-6"
         >
-          {loading ? 'Creating account...' : 'Sign Up →'}
+          {loading ? 'Logging in...' : 'Log In →'}
         </button>
 
         <p className="text-center text-gray-400 text-sm mt-6">
-          Already have an account?{' '}
-          <span onClick={() => navigate('/login')} className="text-purple-600 font-medium cursor-pointer hover:underline">
-            Log in
+          Don't have an account?{' '}
+          <span onClick={() => navigate('/signup')} className="text-purple-600 font-medium cursor-pointer hover:underline">
+            Sign up
           </span>
         </p>
 
@@ -108,4 +100,4 @@ function SignUp() {
   );
 }
 
-export default SignUp;
+export default Login;
